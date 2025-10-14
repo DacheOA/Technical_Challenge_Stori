@@ -1,0 +1,3 @@
+@url = https://4w2l14kx54.execute-api.us-east-2.amazonaws.com/dev/
+
+GET {{url}}/user/2

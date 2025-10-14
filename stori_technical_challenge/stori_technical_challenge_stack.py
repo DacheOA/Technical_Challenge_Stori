@@ -3,7 +3,8 @@ from aws_cdk import (
     aws_s3 as s3,
     aws_lambda as _lambda,
     aws_s3_notifications as s3n,
-    aws_dynamodb as dynamodb
+    aws_dynamodb as dynamodb,
+    aws_apigateway as apigw
     # aws_sqs as sqs,
 )
 from constructs import Construct
@@ -46,3 +47,22 @@ class StoriTechnicalChallengeStack(Stack):
 
         # Grant the Lambda function write permissions to the DynamoDB table
         results_table.grant_write_data(etl_lambda)
+
+        # Create an API Gateway to expose the data in the DynamoDB table
+        api_lambda = _lambda.Function(
+            self, "APIFunction",
+            runtime = _lambda.Runtime.PYTHON_3_9,
+            handler= "main.handler",
+            code= _lambda.Code.from_asset("api.zip"),
+            environment= {"TABLE_NAME": results_table.table_name}
+        )
+
+        # Grant the API Lambda function read permissions to the DynamoDB table
+        results_table.grant_read_data(api_lambda)
+
+        # Create an API Gateway REST API
+        api = apigw.LambdaRestApi(
+            self, "APIGateway",
+            handler= api_lambda,
+            deploy_options= apigw.StageOptions(stage_name= "dev")
+        )

@@ -4,7 +4,8 @@ import io
 from decimal import Decimal, InvalidOperation
 import os
 
-table_name = os.environ.get("TABLE_NAME", "El nombre de la tabla")
+# Get the DynamoDB table name from environment variables
+table_name = os.environ.get("TABLE_NAME", "StoriTechnicalChallengeStack-ResultsTableF0B5BF22-1M54DNQLRZ7YM")
 dynamodb = boto3.resource('dynamodb')
 table = dynamodb.Table(table_name)
 

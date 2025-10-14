@@ -1,0 +1,5 @@
+fastapi==0.103.0
+mangum==0.17.0
+pydantic==1.10.11
+uvicorn==0.23.2
+exceptiongroup

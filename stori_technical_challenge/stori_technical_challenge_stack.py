@@ -4,8 +4,9 @@ from aws_cdk import (
     aws_lambda as _lambda,
     aws_s3_notifications as s3n,
     aws_dynamodb as dynamodb,
-    aws_apigateway as apigw
-    # aws_sqs as sqs,
+    aws_apigateway as apigw,
+    aws_sqs as sqs,
+    aws_lambda_event_sources as lambda_events
 )
 from constructs import Construct
 
@@ -39,12 +40,6 @@ class StoriTechnicalChallengeStack(Stack):
         # Grant the Lambda function read permissions to the S3 bucket
         data_bucket.grant_read(etl_lambda)
 
-        # Add an event notification to the S3 bucket to trigger the Lambda function on object creation
-        data_bucket.add_event_notification(
-            s3.EventType.OBJECT_CREATED,
-            s3n.LambdaDestination(etl_lambda),
-        )
-
         # Grant the Lambda function write permissions to the DynamoDB table
         results_table.grant_write_data(etl_lambda)
 
@@ -66,3 +61,16 @@ class StoriTechnicalChallengeStack(Stack):
             handler= api_lambda,
             deploy_options= apigw.StageOptions(stage_name= "dev")
         )
+
+        # Create SQS queue
+        queue = sqs.Queue(self, "CSVTrigger")
+
+        # Add SQS as destination for the S3 event notification
+        data_bucket.add_event_notification(
+            s3.EventType.OBJECT_CREATED,
+            # s3n.LambdaDestination(etl_lambda), # Add an event notification to the S3 bucket to trigger the Lambda function on object creation
+            s3n.SqsDestination(queue)
+        )
+
+        # Add SQS as event source for the ETL Lambda function
+        etl_lambda.add_event_source(lambda_events.SqsEventSource(queue))

@@ -5,8 +5,9 @@ import json
 
 # # Initialize DynamoDB resource and reference the table using the name from environment variables
 dynamodb = boto3.resource('dynamodb')
-TABLE_NAME = os.environ['TABLE_NAME']
-table = dynamodb.Table(TABLE_NAME)
+def get_table():
+    TABLE_NAME = os.environ['TABLE_NAME']
+    return dynamodb.Table(TABLE_NAME)
 
 def lambda_handler(event, context):
     print("Event:", json.dumps(event))
@@ -23,7 +24,7 @@ def lambda_handler(event, context):
             amount_decimal = Decimal(0)
         
         # Insert each item into the DynamoDB table
-        table.put_item(
+        get_table().put_item(
             Item={
                 'user_id': user_id,
                 'transactions_count': count,

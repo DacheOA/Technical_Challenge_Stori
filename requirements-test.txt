@@ -1,0 +1,7 @@
+pytest==6.2.5
+pytest-mock
+boto3
+pandas
+fastapi
+httpx
+mangum

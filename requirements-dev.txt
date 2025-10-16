@@ -1,1 +1,5 @@
-pytest==6.2.5
+boto3
+pandas
+fastapi
+mangum
+uvicorn

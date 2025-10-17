@@ -62,7 +62,7 @@ AWS
 
 2. Make GET requests:
 ```
-curl https://<api-id>.execute-api.<region>.amazonaws.com/dev/user/1
+curl https://<api-id>.execute-api.<region>.amazonaws.com/dev/user/1 --- curl https://4w2l14kx54.execute-api.us-east-2.amazonaws.com/dev/user/1
 
 curl https://<api-id>.execute-api.<region>.amazonaws.com/dev/user/1?min_amount=50
 
@@ -75,7 +75,13 @@ pip install -r requirements-dev.txt
 
 ```
 
-2. Make GET requests:
+2. Install dependencies:
+```
+uvicorn api.main:app --reload
+
+```
+
+3. Make GET requests:
 ```
 curl http://127.0.0.1:8000/user/1
 
